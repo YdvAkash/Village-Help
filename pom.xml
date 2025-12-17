@@ -76,9 +76,16 @@
         <!-- 📲 AWS SNS (SMS / OTP) ✅ -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>aws-sdk-java</artifactId>
+            <artifactId>sns</artifactId>
             <version>2.25.62</version>
         </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.62</version>
+        </dependency>
+
 
         <!-- ✨ Lombok -->
         <dependency>
