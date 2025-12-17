@@ -1,5 +1,7 @@
 target/
 target/application.properties
+application.properties
+.env
 *.log
 .env
 .idea/
