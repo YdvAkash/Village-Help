@@ -1,8 +1,13 @@
+# Maven / Gradle
 target/
-target/application.properties
-application.properties
-.env
+
+# Spring Boot secrets
+#src/main/resources/application.properties
+#.env
+
+# Logs
 *.log
-.env
+
+# IDEs
 .idea/
 .vscode/
