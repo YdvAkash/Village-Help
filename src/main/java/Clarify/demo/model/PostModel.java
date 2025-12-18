@@ -14,16 +14,11 @@ public class PostModel {
 
     @Id
     private String id;
-
     private Integer userId;
-
     private Integer villageCode;
-
     private String title;
     private String description;
     private String imageUrl;
-
     private PostStatus status; // PENDING, RESOLVED
-
     private Instant createdAt = Instant.now();
 }

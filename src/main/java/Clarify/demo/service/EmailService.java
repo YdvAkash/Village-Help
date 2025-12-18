@@ -29,4 +29,22 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendOtpMail(String toEmail, String otp) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Otp from Clarify");
+        message.setText("Hello,\n" +
+                "\n" +
+                "Your One-Time Password (OTP) is:" + otp +"\n" +
+                "\n" +
+                "This OTP is valid for 5 minutes. Please do not share it with anyone.\n" +
+                "\n" +
+                "Thanks,\n" +
+                "Team Village Help\n");
+
+        mailSender.send(message);
+    }
+
 }
