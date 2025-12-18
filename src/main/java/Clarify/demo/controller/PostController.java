@@ -1,9 +1,11 @@
 package Clarify.demo.controller;
+import Clarify.demo.dto.ApiResponse;
 import Clarify.demo.dto.CreatePostRequest;
 import Clarify.demo.model.PostModel;
 import Clarify.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,9 +19,21 @@ public class PostController {
             value = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public PostModel createPost(
+    public ResponseEntity<ApiResponse<PostModel>> createPost(
             @ModelAttribute CreatePostRequest request
-    ) {
-        return postService.createPost(request);
+    )
+    {
+        PostModel post = postService.createPost(request);
+
+        ApiResponse<PostModel> response =  ApiResponse.<PostModel>builder()
+                .success(true)
+                .message("Post Created Successfully")
+                .data(post)
+                .statusCode(200)
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        return ResponseEntity.ok(response);
+
     }
 }

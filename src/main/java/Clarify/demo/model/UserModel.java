@@ -32,6 +32,7 @@ public class UserModel {
     @Column(length = 10,unique = true,nullable = false)
     private Long phoneNo;
 
+
     @Column(length = 500, nullable = false)
     private String password;
 
@@ -46,7 +47,6 @@ public class UserModel {
     @Column(nullable = false)
     private Date dob;
 
-    private boolean verified;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(20) default 'VILLAGER'")
