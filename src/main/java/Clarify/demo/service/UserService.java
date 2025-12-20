@@ -1,6 +1,8 @@
 package Clarify.demo.service;
-import Clarify.demo.service.EmailService;
 import Clarify.demo.dto.SignupRequest;
+import Clarify.demo.dto.SignupResponse;
+import Clarify.demo.exception.ResourceAlreadyExistsException;
+import Clarify.demo.service.EmailService;
 import Clarify.demo.model.UserModel;
 import Clarify.demo.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +15,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final SmsService smsService;
-    public UserService(EmailService emailService,SmsService smsService, UserRepository userRepository,
+
+    public UserService(EmailService emailService, SmsService smsService,
+                       UserRepository userRepository,
                        BCryptPasswordEncoder passwordEncoder) {
         this.emailService = emailService;
         this.userRepository = userRepository;
@@ -21,18 +25,18 @@ public class UserService {
         this.smsService = smsService;
     }
 
-    public UserModel signUp(SignupRequest request) {
+    public SignupResponse signUp(SignupRequest request) {
 
         if (userRepository.existsByEmail(request.email)) {
-            throw new RuntimeException("Email already exists");
+            throw new ResourceAlreadyExistsException("Email already registered");
         }
 
-        if (userRepository.existsByPhoneNo(Long.valueOf(request.phoneNo))) {
-            throw new RuntimeException("Phone number already exists");
+        if (userRepository.existsByPhoneNo(request.phoneNo)) {
+            throw new ResourceAlreadyExistsException("Phone number already registered");
         }
 
         if (userRepository.existsByAadhaarNo(request.aadhaarNo)) {
-            throw new RuntimeException("Aadhaar already exists");
+            throw new ResourceAlreadyExistsException("Aadhaar already registered");
         }
 
         UserModel user = new UserModel();
@@ -48,17 +52,24 @@ public class UserService {
 
         UserModel savedUser = userRepository.save(user);
 
-        // 📧 SEND MAIL AFTER SUCCESSFUL SIGNUP
-        emailService.sendWelcomeMail(
-                savedUser.getEmail(),
-                savedUser.getName()
-        );
+        // 📧 Email
+        emailService.sendWelcomeMail(savedUser.getEmail(), savedUser.getName());
 
-        String message = "Welcome " + savedUser.getName() +
-                "! Your account has been created successfully.";
-        String Phone = "+91" + String.valueOf(savedUser.getPhoneNo()) ;
-        smsService.sendSms(Phone, message);
+        // 📱 SMS
+        smsService.sendSms("+91" + savedUser.getPhoneNo(),
+                "Welcome " + savedUser.getName() + "! Account created successfully.");
 
-        return savedUser;
+        return SignupResponse.builder()
+                .userId(savedUser.getId())
+                .name(savedUser.getName())
+                .email(savedUser.getEmail())
+                .phoneNo(savedUser.getPhoneNo())
+                .role(savedUser.getRole())
+                .villageCode(savedUser.getVillageCode())
+                .gender(savedUser.getGender())
+                .dob(savedUser.getDob())
+                .build();
     }
 }
+
+
