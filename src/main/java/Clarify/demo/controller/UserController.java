@@ -3,6 +3,7 @@ package Clarify.demo.controller;
 import Clarify.demo.dto.ApiResponse;
 import Clarify.demo.dto.OtpResponse;
 import Clarify.demo.dto.SignupRequest;
+import Clarify.demo.dto.SignupResponse;
 import Clarify.demo.model.UserModel;
 import Clarify.demo.service.OtpSevice;
 import Clarify.demo.service.UserService;
@@ -22,9 +23,22 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public UserModel signup(@RequestBody SignupRequest request) {
-        return userService.signUp(request);
+    public ResponseEntity<ApiResponse<SignupResponse>> signup(
+            @RequestBody SignupRequest request) {
+
+        SignupResponse response = userService.signUp(request);
+
+        return ResponseEntity.status(201).body(
+                ApiResponse.<SignupResponse>builder()
+                        .success(true)
+                        .message("Signup successful")
+                        .statusCode(201)
+                        .timestamp(System.currentTimeMillis())
+                        .data(response)
+                        .build()
+        );
     }
+
 
     @PostMapping("/send-otp")
     public ResponseEntity<ApiResponse<OtpResponse>> sendOtp(
